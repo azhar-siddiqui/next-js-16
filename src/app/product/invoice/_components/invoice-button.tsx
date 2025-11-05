@@ -11,7 +11,7 @@ export default function InvoiceButton({
   return (
     <Link
       href={`/product/invoice/${product.id}`}
-      target="_blank"
+      // target="_blank"
       className={buttonVariants({ variant: "outline" })}
     >
       Get Invoice (New Tab)

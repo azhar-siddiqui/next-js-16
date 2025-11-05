@@ -73,9 +73,6 @@ async function ProductPage() {
             <Badge className="absolute top-2 left-2 text-xs font-medium px-2 py-1 bg-indigo-100 text-indigo-700 capitalize">
               {product.category}
             </Badge>
-            {/* <div className="absolute top-2 left-2 text-xs font-medium px-2 py-1 bg-indigo-100 text-indigo-700  rounded-full">
-              {product.category}
-            </div> */}
           </Link>
         ))}
       </div>
