@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import InvoiceButton from "../invoice/_components/invoice-button";
 
 // Dynamic metadata
 export async function generateMetadata({
@@ -145,9 +146,10 @@ export default async function ProductDetailPage({
               text={product.description}
               maxLength={250}
             />
-
-            <Button className="mt-4">Add to Cart</Button>
-            <Button className="mt-4">Get Invoice</Button>
+            <div className="flex flex-col gap-y-4">
+              <Button className="mt-4">Add to Cart</Button>
+              <InvoiceButton product={product} />
+            </div>
           </div>
         </div>
       </div>
