@@ -16,7 +16,7 @@ export default function InvoiceClient({
   date,
 }: Readonly<Props>) {
   return (
-    <div className="print-container max-w-3xl mx-auto bg-white">
+    <div className="print-container max-w-3xl mx-auto bg-white p-10">
       {/* Header */}
       <div className="flex justify-between items-start mb-12 border-b pb-8">
         <div>
@@ -55,19 +55,31 @@ export default function InvoiceClient({
           <h3 className="text-xl font-semibold mb-3">{product.title}</h3>
           <p className="text-gray-600 mb-6">{product.category}</p>
 
-          <table className="w-full text-lg">
+          <table className="w-full text-lg border-separate border-spacing-y-1">
+            <thead>
+              <tr>
+                <th className="text-left font-semibold text-gray-700 pb-3">
+                  Item
+                </th>
+                <th className="text-right font-semibold text-gray-700 pb-3">
+                  Amount
+                </th>
+              </tr>
+            </thead>
             <tbody>
               <tr>
-                <td className="font-medium py-2">Price</td>
-                <td className="text-right">${product.price.toFixed(2)}</td>
+                <td className="py-2 text-gray-600">Price</td>
+                <td className="text-right font-medium">
+                  ${product.price.toFixed(2)}
+                </td>
               </tr>
               <tr>
-                <td className="font-medium py-2">Tax</td>
-                <td className="text-right">$0.00</td>
+                <td className="py-2 text-gray-600">Tax</td>
+                <td className="text-right text-gray-500">$0.00</td>
               </tr>
-              <tr className="border-t">
-                <td className="font-bold py-3 text-xl">Total</td>
-                <td className="text-right font-bold text-xl">
+              <tr className="border-t border-gray-300">
+                <td className="pt-4 font-bold text-xl">Total</td>
+                <td className="pt-4 text-right font-bold text-xl text-indigo-600">
                   ${product.price.toFixed(2)}
                 </td>
               </tr>
@@ -84,12 +96,7 @@ export default function InvoiceClient({
 
       {/* Print Button (screen only) */}
       <div className="no-print text-center mt-12">
-        <Button
-          onClick={() => window.print()}
-          className="bg-indigo-600 hover:bg-indigo-700"
-        >
-          Print or Save as PDF
-        </Button>
+        <Button onClick={() => globalThis.print()}>Print or Save as PDF</Button>
       </div>
     </div>
   );

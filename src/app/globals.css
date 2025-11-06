@@ -122,24 +122,11 @@
 }
 
 @media print {
-  @page {
-    margin: 0.5cm; /* Optional: small margin if needed */
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    -webkit-print-color-scheme: light;
-    print-color-adjust: exact;
-  }
   .no-print {
     display: none !important;
   }
-  .print-container {
-    padding: 20mm;
-    display: block !important;
-    visibility: visible !important;
-  }
 }
+
 .print-container {
   font-family: system-ui, -apple-system, sans-serif;
 }
