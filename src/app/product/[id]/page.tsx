@@ -2,10 +2,13 @@
 import { Product } from "@/@types/types";
 import TruncateString from "@/components/common/truncated-string";
 import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import InvoiceButton from "../invoice/_components/invoice-button";
+import ProductDetailsSkeleton from "./_components/product-detail-skeleton";
 
 // Dynamic metadata
 export async function generateMetadata({
@@ -79,8 +82,17 @@ export default async function ProductDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id: rawId } = await params;
-  const id = Number(rawId);
+  const { id } = await params;
+
+  return (
+    <Suspense fallback={<ProductDetailsSkeleton />}>
+      <RenderProductDetail id={id} />
+    </Suspense>
+  );
+}
+
+async function RenderProductDetail({ id: productId }: { id: string }) {
+  const id = Number(productId);
 
   if (Number.isNaN(id) || id <= 0) {
     notFound();
@@ -105,7 +117,6 @@ export default async function ProductDetailPage({
   } catch {
     notFound();
   }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
@@ -121,24 +132,29 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="flex flex-col">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">
               {product.title}
             </h1>
 
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-3xl font-bold text-indigo-600">
-                ${product.price.toFixed(2)}
-              </span>
-              <span className="text-sm text-gray-500">
-                • {product.category}
-              </span>
-            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-3xl font-bold text-indigo-600">
+                  ${product.price.toFixed(2)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  • {product.category}
+                </span>
+              </div>
 
-            <div className="flex items-center gap-1 text-amber-500 mb-6">
-              <span>*</span>
-              <span className="text-gray-600">
-                {product.rating.rate} ({product.rating.count} reviews)
-              </span>
+              <div className="flex items-center gap-1 text-amber-500 mb-2">
+                <Star
+                  className="size-4 text-amber-500"
+                  fill="oklch(76.9% 0.188 70.08)"
+                />
+                <span className="text-gray-600">
+                  {product.rating.rate} ({product.rating.count} reviews)
+                </span>
+              </div>
             </div>
 
             <TruncateString
@@ -149,6 +165,11 @@ export default async function ProductDetailPage({
             <div className="flex flex-col gap-y-4">
               <Button className="mt-4">Add to Cart</Button>
               <InvoiceButton product={product} />
+              <InvoiceButton
+                product={product}
+                text="Get Professional Invoice"
+                path="/product/professional-invoice"
+              />
             </div>
           </div>
         </div>
