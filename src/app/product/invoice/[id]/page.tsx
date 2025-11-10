@@ -1,30 +1,22 @@
 import { Product } from "@/@types/types";
 
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { getProduct } from "../../[id]/page";
 import InvoiceClient from "../_components/invoice-client";
+import InvoiceSkeleton from "../_components/invoice-skeleton";
 
 export default async function InvoicePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id: rawId } = await params;
-  const id = Number(rawId);
-
-  if (Number.isNaN(id) || id <= 0) notFound();
-
-  const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-    next: { revalidate: 3600 },
-  });
-
-  if (!res.ok) notFound();
-
-  const text = await res.text();
-  if (!text.trim()) notFound();
+  const { id: productId } = await params;
+  const id = Number(productId);
 
   let product: Product;
   try {
-    product = JSON.parse(text);
+    product = await getProduct(id);
   } catch {
     notFound();
   }
@@ -37,10 +29,31 @@ export default async function InvoicePage({
   const invoiceNumber = `INV-78945487874545`;
 
   return (
+    <Suspense fallback={<InvoiceSkeleton />}>
+      <RenderInvoice
+        product={product}
+        date={date}
+        invoiceNumber={invoiceNumber}
+      />
+    </Suspense>
+  );
+}
+
+type RenderInvoiceProps = {
+  product: Product;
+  date: string;
+  invoiceNumber: string;
+};
+async function RenderInvoice({
+  product,
+  date,
+  invoiceNumber,
+}: RenderInvoiceProps) {
+  return (
     <InvoiceClient
       product={product}
-      invoiceNumber={invoiceNumber}
       date={date}
+      invoiceNumber={invoiceNumber}
     />
   );
 }

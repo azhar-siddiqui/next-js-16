@@ -1,4 +1,5 @@
 // app/products/[id]/page.tsx
+import { ProductSchema } from "@/@types/product";
 import { Product } from "@/@types/types";
 import TruncateString from "@/components/common/truncated-string";
 import { Button } from "@/components/ui/button";
@@ -6,9 +7,28 @@ import { Star } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import InvoiceButton from "../invoice/_components/invoice-button";
 import ProductDetailsSkeleton from "./_components/product-detail-skeleton";
+
+export const revalidate = 3600; // 1 hour
+
+export const getProduct = cache(async (id: number): Promise<Product> => {
+  const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
+    next: {
+      revalidate,
+    },
+  });
+
+  if (!res.ok) throw new Error("Product not found");
+
+  const data = await res.json();
+
+  const parsed = ProductSchema.safeParse(data);
+  if (!parsed.success) throw new Error("Invalid product data");
+
+  return parsed.data;
+});
 
 // Dynamic metadata
 export async function generateMetadata({
@@ -27,31 +47,13 @@ export async function generateMetadata({
     };
   }
 
-  // Fetch product for metadata
-  const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-    next: { revalidate: 3600 },
-  });
-
-  if (!res.ok) {
-    return {
-      title: "Product Not Found | Fake Store",
-      description: "The product you're looking for doesn't exist.",
-    };
-  }
-
-  const text = await res.text();
-  if (!text.trim()) {
-    return {
-      title: "Product Not Found | Fake Store",
-    };
-  }
-
   let product: Product;
   try {
-    product = JSON.parse(text);
+    product = await getProduct(id);
   } catch {
     return {
-      title: "Product Error | Fake Store",
+      title: "Product Not Found | Fake Store",
+      description: "The product you are looking for does not exist.",
     };
   }
 
@@ -94,26 +96,9 @@ export default async function ProductDetailPage({
 async function RenderProductDetail({ id: productId }: { id: string }) {
   const id = Number(productId);
 
-  if (Number.isNaN(id) || id <= 0) {
-    notFound();
-  }
-
-  const res = await fetch(`https://fakestoreapi.com/products/${id}`, {
-    next: { revalidate: 3600 },
-  });
-
-  if (!res.ok) {
-    notFound();
-  }
-
-  const text = await res.text();
-  if (!text.trim()) {
-    notFound();
-  }
-
   let product: Product;
   try {
-    product = JSON.parse(text);
+    product = await getProduct(id);
   } catch {
     notFound();
   }
