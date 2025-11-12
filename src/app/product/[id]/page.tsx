@@ -2,7 +2,6 @@
 import { ProductSchema } from "@/@types/product";
 import { Product } from "@/@types/types";
 import TruncateString from "@/components/common/truncated-string";
-import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -106,7 +105,7 @@ async function RenderProductDetail({ id: productId }: { id: string }) {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="relative h-96 bg-gray-50 rounded-xl overflow-hidden">
+          <div className="relative bg-gray-50 rounded-xl overflow-hidden">
             <Image
               src={product.image}
               alt={product.title}
@@ -147,8 +146,13 @@ async function RenderProductDetail({ id: productId }: { id: string }) {
               text={product.description}
               maxLength={250}
             />
-            <div className="flex flex-col gap-y-4">
-              <Button className="mt-4">Add to Cart</Button>
+            <div className="flex flex-col gap-y-4 mt-4">
+              <InvoiceButton
+                product={product}
+                text="Get Custom Invoice"
+                path="/product/get-custom-invoice"
+                variant="default"
+              />
               <InvoiceButton product={product} />
               <InvoiceButton
                 product={product}

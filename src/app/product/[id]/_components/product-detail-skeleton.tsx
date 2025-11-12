@@ -15,7 +15,11 @@ export default function ProductDetailsSkeleton() {
           {/* Content Skeleton */}
           <div className="flex flex-col">
             {/* Title */}
-            <Skeleton className="h-9 w-3/4 mb-6" />
+            <div className="w-full flex flex-col gap-2 mb-6">
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-8 w-full" />
+            </div>
 
             {/* Price & Category Row */}
             <div className="flex justify-between items-center mb-4">
@@ -26,7 +30,10 @@ export default function ProductDetailsSkeleton() {
 
               {/* Rating */}
               <div className="flex items-center gap-1">
-                <Star className="size-4 text-amber-500" fill="oklch(76.9% 0.188 70.08)" />
+                <Star
+                  className="size-4 text-amber-500"
+                  fill="oklch(76.9% 0.188 70.08)"
+                />
                 <Skeleton className="h-5 w-32" />
               </div>
             </div>
